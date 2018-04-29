@@ -6,36 +6,36 @@ var request = require("request");
 var fs = require("fs");
 
 
-console.log("Testing dotenv: " + dotenv);
-console.log("Testing process.env: " + process.env.SPOTIFY_ID);
+// console.log("Testing dotenv: " + dotenv);
+// console.log("Testing process.env: " + process.env.SPOTIFY_ID);
 
 
 
 
 
 var spotify = new Spotify(keys.spotify);
-console.log("\n++++++++++++++++++++++++++++++" + "\nSPOTIFY KEYS: " + "\n" + JSON.stringify(spotify, null, 2));
+// console.log("\n++++++++++++++++++++++++++++++" + "\nSPOTIFY KEYS: " + "\n" + JSON.stringify(spotify, null, 2));
 var client = new Twitter(keys.twitter);
-console.log("\n++++++++++++++++++++++++++++++" + "\nTWITTER KEYS: " + "\n" + JSON.stringify(client, null, 2));
+// console.log("\n++++++++++++++++++++++++++++++" + "\nTWITTER KEYS: " + "\n" + JSON.stringify(client, null, 2));
 
-// TWITTER HERE --------->
-// var client = new Twitter({
-//   consumer_key: '',
-//   consumer_secret: '',
-//   access_token_key: '',
-//   access_token_secret: ''
-// });
+// Creates lines under called function for ease of reading in terminal.
+function spacingLines() {
+  var spacingLinesArr = [];
+  for (var i = 0; i < 50; i++) {
+    spacingLinesArr.push("-");
+  }
+  spacingLinesArr = spacingLinesArr.join(""); 
+  console.log(spacingLinesArr);
+}
 
+// Shows 20 tweets in terminal from twitter account
 function tweetPull() {
-  var params = {screen_name: 'herewhengone'};
   client.get('statuses/user_timeline', count=20, function(error, tweets, response) {
     if (!error) {
-      // console.log(JSON.stringify(tweets, null, 2));
-      // for (var created_at in tweets) {
-      //   console.log(tweets.created_at);
-      // }
+      console.log("\nMY TWEETS");
+      spacingLines();
       for (var i = 0; i < tweets.length; i++) {
-        console.log(tweets[i].created_at + "\n" + tweets[i].text);
+        console.log(i + " - " + tweets[i].created_at + "\n" + tweets[i].text);
       }
     }
   });
