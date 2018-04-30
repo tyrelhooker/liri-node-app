@@ -34,7 +34,7 @@ function tweetPull() {
     }
   });
 }
-
+// Shows 5 tracks in terminal corresponding to user song input. If no input, shows default song from Spotify.
 function songPull() {
   if (!songOrMovie) {
     spotify.search({ type: 'track', query: "The Sign Ace of Base", limit: 1}, function(err, data) {
@@ -53,15 +53,12 @@ function songPull() {
     });
   }
   else {
-    spotify.search({ type: 'track', query: songOrMovie, limit: 4}, function(err, data) {
+    spotify.search({ type: 'track', query: songName, limit: 4}, function(err, data) {
       if (err) {
           console.log('Error occurred: ' + err);
           return;
       }
-      // Do something with 'data' 
       // console.log(JSON.stringify(data, null, 2));
-      // console.log(data);
-
       var dataCombo = data.tracks.items;
       for (var i = 0; i < dataCombo.length; i++) {
         var artist = dataCombo[i].album.artists[0].name;
@@ -74,19 +71,67 @@ function songPull() {
   }
 }
 
+var nodeArgs = process.argv;
+var movieName = "";
+var songName = "";
+
+function inputConverter() {
+  // var nodeArgs = process.argv;
+  // var movieName = "";
+  // var songName = "";
+  for (var i = 3; i < nodeArgs.length; i++) {
+    if (i > 3 && i < nodeArgs.length) {
+      movieName = movieName + "+" + nodeArgs[i];
+      songName = songName + "+" + nodeArgs[i];
+    }
+    else {
+      movieName += nodeArgs[i];
+      songName += nodeArgs[i];
+    }
+  }
+}
+
 function moviePull() {
-  songOrMovie = "Mr." + "+" + "Nobody";
-  console.log(songOrMovie);
+  
+  // var nodeArgs = process.argv;
+  // var movieName = "";
+  // for (var i = 3; i < nodeArgs.length; i++) {
+  //   if (i > 3 && i < nodeArgs.length) {
+  //     movieName = movieName + "+" + nodeArgs[i];
+  //   }
+  //   else {
+  //     movieName += nodeArgs[i];
+  //   }
+  // }
+
+  var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&apikey=trilogy";
+  console.log("queryUrl Check: " + queryUrl);
+  // songOrMovie = "Mr." + "+" + "Nobody";
+  // console.log(songOrMovie);
   // Runs a request to the OMDB API with user movie input
-  request("http://www.omdbapi.com/?t=" + songOrMovie + "&apikey=trilogy", function(error, response, body) {
-    console.log(songOrMovie);
+  request(queryUrl, function(error, response, body) {
+    console.log(movieName);
     // If the request is successful (i.e. if the response status code is 200)
     if (!error && response.statusCode === 200) {
 
       // Parse the body of the site and recover just the imdbRating
       // (Note: The syntax below for parsing isn't obvious. Just spend a few moments dissecting it).
-      body = JSON.parse(body)
-      console.log(body.Title);
+      var bodyObj = JSON.parse(body);
+      console.log(bodyObj);
+      console.log("\nMOVIE THIS: "); 
+      spacingLines();
+      console.log(
+        "Movie Title: " + bodyObj.Title + 
+        "\nYear of Release: " + bodyObj.Year +
+        "\nIMDB Rating: " + bodyObj.Ratings[0].Value +
+        "\nRotten Tomatoes Rating: " + bodyObj.Ratings[1].Value + 
+        "\nCountry of Production: " + bodyObj.Country +
+        "\nLanguage: " + bodyObj.Language +
+        "\nPlot: " + bodyObj.Plot +
+        "\nActors: " + bodyObj.Actors
+      );
+      // console.log(JSON.parse(body).Year);
+      // console.log("testing body type: " + body);
     }
   });
 }
@@ -103,14 +148,16 @@ function zombieSong() {
 
 
 var userInput = process.argv[2];
-var songOrMovie = process.argv[3];
+// var songOrMovie = process.argv[3];
 if (userInput === "my-tweets") {
   tweetPull();
 }
 else if (userInput === "spotify-this-song") {
+  inputConverter();
   songPull();
 }
 else if (userInput === "movie-this") {
+  inputConverter();
   moviePull();
 }
 else if (userInput === "do-what-it-says") {
