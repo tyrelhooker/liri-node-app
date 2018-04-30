@@ -4,18 +4,12 @@ var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
 var request = require("request");
 var fs = require("fs");
-
+var spotify = new Spotify(keys.spotify);
+var client = new Twitter(keys.twitter);
 
 // console.log("Testing dotenv: " + dotenv);
 // console.log("Testing process.env: " + process.env.SPOTIFY_ID);
-
-
-
-
-
-var spotify = new Spotify(keys.spotify);
 // console.log("\n++++++++++++++++++++++++++++++" + "\nSPOTIFY KEYS: " + "\n" + JSON.stringify(spotify, null, 2));
-var client = new Twitter(keys.twitter);
 // console.log("\n++++++++++++++++++++++++++++++" + "\nTWITTER KEYS: " + "\n" + JSON.stringify(client, null, 2));
 
 // Creates lines under called function for ease of reading in terminal.
@@ -42,21 +36,42 @@ function tweetPull() {
 }
 
 function songPull() {
-
-  spotify.search({ type: 'track', query: songOrMovie, limit: 1}, function(err, data) {
+  if (!songOrMovie) {
+    spotify.search({ type: 'track', query: "The Sign Ace of Base", limit: 1}, function(err, data) {
+      if (err) {
+        console.log('Error occurred: ' + err);
+        return;
+      }
+      var dataCombo = data.tracks.items;
+      for (var i = 0; i < dataCombo.length; i++) {
+        var artist = dataCombo[i].album.artists[0].name;
+        var song = dataCombo[i].name;
+        var album = dataCombo[i].album.name;
+        var preview = dataCombo[i].preview_url;
+        console.log("Artist: " + artist + "\nSong Name: " + song + "\nAlbum: " + album + "\nPreview Link: " + preview);
+      }
+    });
+  }
+  else {
+    spotify.search({ type: 'track', query: songOrMovie, limit: 4}, function(err, data) {
       if (err) {
           console.log('Error occurred: ' + err);
           return;
       }
       // Do something with 'data' 
-      console.log(JSON.stringify(data, null, 2));
+      // console.log(JSON.stringify(data, null, 2));
       // console.log(data);
-      var artist = data.tracks.items[0].album.artists[0].name;
-      var song = data.tracks.items[0].album.artists[0].name;
-      var album = data.tracks.items[0].album.name;
-      console.log("testing spotify JSON: " + artist + album);
-      
-  });
+
+      var dataCombo = data.tracks.items;
+      for (var i = 0; i < dataCombo.length; i++) {
+        var artist = dataCombo[i].album.artists[0].name;
+        var song = dataCombo[i].name;
+        var album = dataCombo[i].album.name;
+        var preview = dataCombo[i].preview_url;
+        console.log("Artist: " + artist + "\nSong Name: " + song + "\nAlbum: " + album + "\nPreview Link: " + preview);
+      }
+    });
+  }
 }
 
 function moviePull() {
