@@ -4,17 +4,13 @@ var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
 var request = require("request");
 var fs = require("fs");
+
 var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
 var userInput = process.argv[2];
 var nodeArgs = process.argv;
 var movieName = "";
 var songName = "";
-
-// console.log("Testing dotenv: " + dotenv);
-// console.log("Testing process.env: " + process.env.SPOTIFY_ID);
-// console.log("\n++++++++++++++++++++++++++++++" + "\nSPOTIFY KEYS: " + "\n" + JSON.stringify(spotify, null, 2));
-// console.log("\n++++++++++++++++++++++++++++++" + "\nTWITTER KEYS: " + "\n" + JSON.stringify(client, null, 2));
 
 // Creates lines under called function for ease of reading in terminal.
 function spacingLines() {
@@ -40,20 +36,21 @@ function inputConverter() {
   }
 }
 
-// Shows 20 tweets in terminal from twitter account
+// Shows 20 tweets in terminal from twitter account, showing most recent 1st
 function tweetPull() {
   client.get('statuses/user_timeline', count=20, function(error, tweets, response) {
     if (!error) {
       console.log("\nMY TWEETS");
       spacingLines();
       for (var i = 0; i < tweets.length; i++) {
-        console.log(i + " - " + tweets[i].created_at + "\n" + tweets[i].text);
+        var renumberIndex = i + 1;
+        console.log(renumberIndex + " - " + tweets[i].created_at + "\n" + "     " + tweets[i].text);
       }
     }
   });
 }
 
-// Shows 5 tracks in terminal corresponding to user node song input. If no input, shows default song from Spotify.
+// Shows 5 tracks in terminal corresponding to user node song input. If no input, shows default song from Spotify
 function songPull() {
   if (!songName) {
     console.log("\nSPOTIFY TRACK SEARCH RESULTS - missing user input: ");
@@ -88,7 +85,8 @@ function songPull() {
         var song = dataCombo[i].name;
         var album = dataCombo[i].album.name;
         var preview = dataCombo[i].preview_url;
-        console.log(i + " - " + "Artist: " + artist + "\n    Song Name: " + song + "\n    Album: " + album + "\n    Preview Link: " + preview + "\n");
+        var renumberIndex = i + 1;
+        console.log(renumberIndex + " - " + "Artist: " + artist + "\n    Song Name: " + song + "\n    Album: " + album + "\n    Preview Link: " + preview + "\n");
       }
     });
   }
@@ -105,7 +103,6 @@ function moviePull() {
     // If the request is successful (i.e. if the response status code is 200)
     if (!error && response.statusCode === 200) {
       var bodyObj = JSON.parse(body);
-      // console.log(bodyObj);
       console.log("\nMOVIE THIS: "); 
       spacingLines();
       console.log(
@@ -132,8 +129,8 @@ function zombieSong() {
     data = data.split(",");
     userInput = data[0];
     songName = data[1];
+    // Extracts parts fo the songName string to ensure songName matches input for spotify-this-songs' function.
     songName = songName.substr(1, songName.length-2);
-    console.log(songName);
     nodeCommands();
   });
 }
@@ -155,7 +152,6 @@ function nodeCommands() {
     zombieSong();
   }
 }
-
 
 // ******** MAIN CODE ********
 nodeCommands();
