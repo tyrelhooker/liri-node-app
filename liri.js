@@ -128,7 +128,16 @@ function zombieSong() {
     if (error) {
       return console.log(error);
     }
-    console.log("check if access txt file: " + data);
+    console.log(data);
+    data = data.split(",");
+    console.log(data);
+    userInput = data[0];
+    console.log(userInput);
+    songName = data[1];
+    console.log(songName);
+    songName = songName.substr(1, songName.length-2);
+    console.log(songName);
+    songPull();
   });
 }
 
