@@ -36,7 +36,7 @@ function tweetPull() {
 }
 // Shows 5 tracks in terminal corresponding to user song input. If no input, shows default song from Spotify.
 function songPull() {
-  if (!songOrMovie) {
+  if (!songName) {
     spotify.search({ type: 'track', query: "The Sign Ace of Base", limit: 1}, function(err, data) {
       if (err) {
         console.log('Error occurred: ' + err);
