@@ -122,42 +122,42 @@ function moviePull() {
   });
 }
 
+// Reads data from txt file, converts data to an array, assigns the array values to the global variables, and uses the variables to call the app's node commands 
 function zombieSong() {
   // Stores the contents of the file inside data variable
   fs.readFile("random.txt", "utf-8", function(error, data) {
     if (error) {
       return console.log(error);
     }
-    console.log(data);
     data = data.split(",");
-    console.log(data);
     userInput = data[0];
-    console.log(userInput);
     songName = data[1];
-    console.log(songName);
     songName = songName.substr(1, songName.length-2);
     console.log(songName);
-    songPull();
+    nodeCommands();
   });
+}
+
+// Takes user node input by the 'keywords' in terminal and calls functions based on the keywords
+function nodeCommands() {
+  if (userInput === "my-tweets") {
+    tweetPull();
+  }
+  else if (userInput === "spotify-this-song") {
+    inputConverter();
+    songPull();
+  }
+  else if (userInput === "movie-this") {
+    inputConverter();
+    moviePull();
+  }
+  else if (userInput === "do-what-it-says") {
+    zombieSong();
+  }
 }
 
 
 // ******** MAIN CODE ********
-// Takes user node input by the 'keywords' in terminal and calls functions based on the keywords
-if (userInput === "my-tweets") {
-  tweetPull();
-}
-else if (userInput === "spotify-this-song") {
-  inputConverter();
-  songPull();
-}
-else if (userInput === "movie-this") {
-  inputConverter();
-  moviePull();
-}
-else if (userInput === "do-what-it-says") {
-  zombieSong();
-}
-
+nodeCommands();
 
  
